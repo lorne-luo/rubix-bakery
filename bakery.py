@@ -135,9 +135,62 @@ class Product:
         for i in self.pack_quantity:
             pack_amount, rest = int(rest / i), rest % i
             result[i] = pack_amount
-            print(rest)
-        print(result, rest)
+            if rest == 0:
+                break
+        return result, rest
 
     def pack_order(self, quantity):
-        """"""
-        raise NotImplementedError
+        """return pack match as dict and remainder"""
+        best_match = ({}, None)  # tuple include pack amount and remainder
+        pack_set = {}
+        remainder = quantity
+
+        self._fill(pack_set, quantity, self.pack_quantity)
+
+    def _fill(self, pack_dict, remainder_quantity,pack_sizes):
+        for pack_quantity in pack_sizes:
+            pack_amount, remainder_quantity = int(remainder_quantity / pack_quantity), remainder_quantity % pack_quantity
+            pack_dict[pack_quantity] = pack_amount
+            if remainder_quantity==0:
+                return pack_dict,remainder_quantity
+            if pack_dict and remainder_quantity and remainder_quantity > min(avaliable_pack_quantity)
+
+        pack_amount, rest = int(remainder_quantity / pack_quantity), remainder_quantity % pack_quantity
+
+        result = {}
+        rest = remainder_quantity
+        for i in self.pack_quantity:
+            pack_amount, rest = int(rest / i), rest % i
+            result[i] = pack_amount
+            if rest == 0:
+                break
+        return result, rest
+
+    def _pop_smallest_pack(self, pack_dict, remainder):
+        pack_size = list(pack_dict.keys())
+        pack_size.sort()
+
+        for size in pack_size:
+            if size in pack_dict and pack_dict[size] > 0:
+                if pack_dict[size] == 1:
+                    pack_dict.pop(size)
+                else:
+                    pack_dict[size] -= 1
+                remainder += size
+                return pack_dict, remainder
+        return pack_dict, remainder
+
+
+def test():
+    a=[8,5]
+    q=23
+    for i in range(len(a)):
+        for j in
+
+
+if __name__ == '__main__':
+    product = Product('Blueberry Muffin',
+                      'MB11',
+                      {'5': 16.95,
+                       8: '24.9599',
+                       2: 9.9511111, })
