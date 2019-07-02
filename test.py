@@ -48,7 +48,7 @@ class MyTestCase(unittest.TestCase):
         cf = Product('Croissant', 'CF', {3: 5.95,
                                          5: 9.95,
                                          9: 16.99})
-        bakery = Bakery(vs, mb, cf)
+        bakery = Bakery([vs, mb, cf])
 
         # input format test
         order_packs = bakery.process_order({'VS5': '10',

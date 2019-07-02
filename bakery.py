@@ -5,8 +5,12 @@ from decimal import Decimal, ROUND_DOWN
 class Bakery:
     _products = {}
 
-    def __init__(self, *products):
-        raise NotImplementedError
+    def __init__(self, products):
+        for product in products:
+            # skip if type not match
+            if isinstance(product, Product):
+                self._products[product.code] = product
+
 
     def process_order(self, order_dict):
         raise NotImplementedError
