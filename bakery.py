@@ -12,6 +12,9 @@ class Bakery:
     _products = {}
 
     def __init__(self, products):
+        """
+        :param products: list of product object
+        """
         for product in products:
             # skip if type not match
             if isinstance(product, Product):
@@ -23,9 +26,16 @@ class Bakery:
         return self._products
 
     def process_order(self, order_dict):
+        """
+        :param order_dict: dict of product code and amount
+        :return: pack result of entire order
+        """
         raise NotImplementedError
 
     def get_product(self, code):
+        """
+        get product by code
+        """
         if code not in self._products:
             raise KeyError(f'{code} is not a code of products')
         return self._products[code]
@@ -35,6 +45,11 @@ class Product:
     _packs = {}
 
     def __init__(self, name, code, pack_price_dict):
+        """
+        :param name: name of product
+        :param code: code of product
+        :param pack_price_dict: dict of pack size and price
+        """
         self._name = str(name)
         self._code = str(code)
 
@@ -62,14 +77,35 @@ class Product:
 
     @property
     def pack_quantity(self):
+        """quantity list of available packs"""
         quantity_options = list(self._packs.keys())
-        quantity_options.sort()
+        quantity_options.sort(reverse=True)
         return quantity_options
 
     def get_pack_price(self, quantity):
+        """
+        :param quantity: pack quantity
+        :return: price for specified quantity pack, raise error if not exist
+        """
         if quantity not in self._packs:
             raise KeyError(f'{quantity} is not in {self.code}\'s pack options')
         return self._packs[quantity]
 
+    def get_total_price(self,order_dict):
+        """
+        :param order_dict: pack size and amount
+        :return: total price
+        """
+        raise NotImplementedError
+
+    def _quick_pack(self, quantity):
+        """
+        most greedy way to match the order, so if perfect match exist it will get quick response
+        :param quantity:
+        :return: dict of pack size and amount
+        """
+        raise NotImplementedError
+
     def pack_order(self, quantity):
+        """"""
         raise NotImplementedError

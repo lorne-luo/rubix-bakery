@@ -22,6 +22,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(product.get_pack_price(8), Decimal('24.95'))
         self.assertEqual(abs(product.get_pack_price(2).as_tuple().exponent), DECIMAL_PLACES)
 
+        # calculate order price
+        self.assertEqual(product.get_total_price({5: 2}),
+                         Decimal('16.95') * 2)
+        self.assertEqual(product.get_total_price({5: 1, 2: 1, 8: 1}),
+                         Decimal('16.95') + Decimal('9.95') + Decimal('24.95'))
+
         # test order process
         packs, rest = product.pack_order(14)
         self.assertEqual(rest, 0)
@@ -62,8 +68,6 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue('VS5' in order_packs)
         self.assertTrue('CF' in order_packs)
         self.assertTrue('CF' in order_packs)
-
-
 
         # test single product order
         order_packs = bakery.process_order({'VS5': 10})
