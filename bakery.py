@@ -1,4 +1,5 @@
 import logging
+import sys
 from decimal import Decimal, ROUND_DOWN
 
 # decimal is better type than float for currency due to fixed point
@@ -141,30 +142,49 @@ class Product:
 
     def pack_order(self, quantity):
         """return pack match as dict and remainder"""
+        try:
+            quantity = int(quantity)
+        except:
+            raise Exception('invalid quantity, should be int')
+
         best_match = ({}, None)  # tuple include pack amount and remainder
         pack_set = {}
         remainder = quantity
 
-        self._fill(pack_set, quantity, self.pack_quantity)
+        return self._fill(pack_set, quantity, self.pack_quantity)
 
-    def _fill(self, pack_dict, remainder_quantity,pack_sizes):
-        for pack_quantity in pack_sizes:
-            pack_amount, remainder_quantity = int(remainder_quantity / pack_quantity), remainder_quantity % pack_quantity
-            pack_dict[pack_quantity] = pack_amount
-            if remainder_quantity==0:
-                return pack_dict,remainder_quantity
-            if pack_dict and remainder_quantity and remainder_quantity > min(avaliable_pack_quantity)
+    def _fill(self, pack_dict, remainder_quantity, pack_sizes):
+        # print('-> call', pack_dict, remainder_quantity,pack_sizes)
 
-        pack_amount, rest = int(remainder_quantity / pack_quantity), remainder_quantity % pack_quantity
+        for i in range(len(pack_sizes)):
+            pack_quantity = pack_sizes[i]
+            pack_amount, remainder_quantity = int(
+                remainder_quantity / pack_quantity), remainder_quantity % pack_quantity
 
-        result = {}
-        rest = remainder_quantity
-        for i in self.pack_quantity:
-            pack_amount, rest = int(rest / i), rest % i
-            result[i] = pack_amount
-            if rest == 0:
-                break
-        return result, rest
+            if pack_amount > 0:
+                pack_dict[pack_quantity] = pack_amount
+                # print('set pack', pack_quantity, pack_amount,remainder_quantity)
+
+            if remainder_quantity == 0 or not pack_sizes[i + 1:]:
+                # if remainder_quantity == 0:
+                #     print('perfect', pack_dict, remainder_quantity)
+                # if not pack_sizes[i + 1:]:
+                #     print('end size', pack_dict, remainder_quantity)
+                return pack_dict, remainder_quantity
+
+            for j in range(pack_amount):
+                pack_dict, remainder_quantity = self._fill(pack_dict, remainder_quantity, pack_sizes[i + 1:])
+                if remainder_quantity > 0:
+                    pack_dict, remainder_quantity = self._pop_smallest_pack(pack_dict, remainder_quantity)
+
+                if remainder_quantity == 0 or not pack_sizes[i + 1:]:
+                    # if remainder_quantity == 0:
+                    #     print('perfect', pack_dict, remainder_quantity)
+                    # if not pack_sizes[i + 1:]:
+                    #     print('end size', pack_dict, remainder_quantity)
+                    return pack_dict, remainder_quantity
+
+        return pack_dict, remainder_quantity
 
     def _pop_smallest_pack(self, pack_dict, remainder):
         pack_size = list(pack_dict.keys())
@@ -181,16 +201,12 @@ class Product:
         return pack_dict, remainder
 
 
-def test():
-    a=[8,5]
-    q=23
-    for i in range(len(a)):
-        for j in
-
-
 if __name__ == '__main__':
+    arg = sys.argv[1]
     product = Product('Blueberry Muffin',
                       'MB11',
                       {'5': 16.95,
                        8: '24.9599',
                        2: 9.9511111, })
+    for i in range(int(arg)):
+        print(i, product.pack_order(int(i)))
