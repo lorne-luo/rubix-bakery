@@ -4,6 +4,19 @@ from bakery import *
 
 
 class MyTestCase(unittest.TestCase):
+    def test_order(self):
+        order = Order({'VS5': 10,
+                       'MB11': 14,
+                       'CF': 13})
+        self.assertTrue('VS5' in order.products)
+        self.assertTrue('MB11' in order.products)
+        self.assertTrue('CF' in order.products)
+
+        product_info=order.get_product('VS5')
+        self.assertTrue('quantity' in product_info)
+        self.assertTrue('packs' in product_info)
+        self.assertTrue('total_price' in product_info)
+
     def test_product(self):
         product = Product('Blueberry Muffin',
                           'MB11',

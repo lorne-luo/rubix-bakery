@@ -41,6 +41,24 @@ class Bakery:
         return self._products[code]
 
 
+class Order:
+    _products = {}
+
+    def __init__(self, order_dict):
+        """
+        :param order_dict: dict of product code and amount
+        """
+        raise NotImplementedError
+
+    # expose as property to make sure immutable from outside
+    @property
+    def products(self):
+        return self.products
+
+    def get_product(self, code):
+        raise NotImplementedError
+
+
 class Product:
     _packs = {}
 
@@ -91,7 +109,7 @@ class Product:
             raise KeyError(f'{quantity} is not in {self.code}\'s pack options')
         return self._packs[quantity]
 
-    def get_total_price(self,order_dict):
+    def get_total_price(self, order_dict):
         """
         :param order_dict: pack size and amount
         :return: total price
@@ -104,7 +122,13 @@ class Product:
         :param quantity:
         :return: dict of pack size and amount
         """
-        raise NotImplementedError
+        result = {}
+        rest = quantity
+        for i in self.pack_quantity:
+            pack_amount, rest = int(rest / i), rest % i
+            result[i] = pack_amount
+            print(rest)
+        print(result, rest)
 
     def pack_order(self, quantity):
         """"""
