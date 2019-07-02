@@ -16,6 +16,13 @@ class Bakery:
     def products(self):
         return self._products
 
+
+    def get_product(self, code):
+        if code not in self._products:
+            raise KeyError(f'{code} is not a code of products')
+        return self._products[code]
+
+
 class Product:
     _packs = {}
 

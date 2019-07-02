@@ -59,6 +59,10 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue('CF' in order_packs)
         self.assertTrue('CF' in order_packs)
 
+        # test get product by code
+        test_code = 'VS5'
+        self.assertEqual(bakery.get_product('VS5'), test_code)
+
         # test single product order
         order_packs = bakery.process_order({'VS5': 10})
         self.assertEqual(order_packs, {'VS5': {5: 2}})
