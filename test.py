@@ -11,8 +11,9 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue('VS5' in order.products)
         self.assertTrue('MB11' in order.products)
         self.assertTrue('CF' in order.products)
+        self.assertEqual(order.total_price, None)
 
-        product_info=order.get_product('VS5')
+        product_info = order.get_product('VS5')
         self.assertTrue('quantity' in product_info)
         self.assertTrue('packs' in product_info)
         self.assertTrue('total_price' in product_info)
@@ -83,13 +84,15 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue('CF' in order_packs)
 
         # test single product order
-        order_packs = bakery.process_order({'VS5': 10})
-        self.assertEqual(order_packs, {'VS5': {5: 2}})
+        order = Order({'VS5': 10})
+        bakery.process_order(order)
+        self.assertEqual(order.get_product('VS5')['packs'], {'VS5': {5: 2}})
 
         # test combined products order
-        order_packs = bakery.process_order({'VS5': 10,
-                                            'MB11': 14,
-                                            'CF': 13})
-        self.assertEqual(order_packs, {'VS5': {5: 2},
-                                       'MB11': {8: 1, 2: 3},
-                                       'CF': {5: 2, 3: 1}})
+        order = Order({'VS5': 10,
+                       'MB11': 14,
+                       'CF': 13})
+        bakery.process_order(order)
+        self.assertEqual(order.get_product('VS5')['packs'], {'VS5': {5: 2}})
+        self.assertEqual(order.get_product('MB11')['packs'], {'MB11': {8: 1, 2: 3}})
+        self.assertEqual(order.get_product('CF')['packs'], {'CF': {5: 2, 3: 1}})
