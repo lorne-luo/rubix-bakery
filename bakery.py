@@ -1,11 +1,12 @@
 import logging
+import sys
 from decimal import Decimal, ROUND_DOWN
 
 # decimal is better type than float for currency due to fixed point
 DECIMAL_PLACES = 2  # 10 ** -2 = 0.01
 DECIMAL_UNIT = Decimal(str(10 ** (-1 * DECIMAL_PLACES)))
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Bakery:
@@ -103,7 +104,7 @@ class Product:
 
     @property
     def pack_quantity(self):
-        """quantity list of available packs"""
+        """quantity list of available packs with descending sort"""
         quantity_options = list(self._packs.keys())
         quantity_options.sort(reverse=True)
         return quantity_options
@@ -135,9 +136,74 @@ class Product:
         for i in self.pack_quantity:
             pack_amount, rest = int(rest / i), rest % i
             result[i] = pack_amount
-            print(rest)
-        print(result, rest)
+            if rest == 0:
+                break
+        return result, rest
 
     def pack_order(self, quantity):
-        """"""
-        raise NotImplementedError
+        """return pack match as dict and remainder"""
+        try:
+            quantity = int(quantity)
+        except:
+            raise Exception('invalid quantity, should be int')
+
+        pack_set = {}
+
+        # self.pack_quantity is in descending sort, so prior to put large size pack in
+        return self._fill(pack_set, quantity, self.pack_quantity)
+
+    def _fill(self, pack_dict, remainder_quantity, pack_sizes):
+        """
+        recursive function to breakdown quantity into pack set
+        :param pack_dict: dict of pack size and pack amount to indicate what and how many pack already in
+        :param remainder_quantity: remainder of how many still need to be break down
+        :param pack_sizes: available pack size in this recursion
+        :return: dict of pack breakdown and remainder
+        """
+        logger.debug('Call _fill()', pack_dict, remainder_quantity, pack_sizes)
+
+        for i in range(len(pack_sizes)):
+            pack_quantity = pack_sizes[i]
+            pack_amount, remainder_quantity = int(
+                remainder_quantity / pack_quantity), remainder_quantity % pack_quantity
+
+            if pack_amount > 0:
+                # some pack could be added into the pack set
+                pack_dict[pack_quantity] = pack_amount
+
+            if remainder_quantity == 0 or not pack_sizes[i + 1:]:
+                # return directly if remainder is 0 or no smaller pack size available
+                logger.debug('_fill() return', pack_dict, remainder_quantity)
+                return pack_dict, remainder_quantity
+
+            for j in range(pack_amount):
+                pack_dict, remainder_quantity = self._fill(pack_dict, remainder_quantity, pack_sizes[i + 1:])
+                if remainder_quantity > 0:
+                    pack_dict, remainder_quantity = self._pop_smallest_pack(pack_dict, remainder_quantity)
+
+                if remainder_quantity == 0 or not pack_sizes[i + 1:]:
+                    # return directly if remainder is 0 or no smaller pack size available
+                    logger.debug('_fill() return', pack_dict, remainder_quantity)
+                    return pack_dict, remainder_quantity
+
+        return pack_dict, remainder_quantity
+
+    def _pop_smallest_pack(self, pack_dict, remainder):
+        """
+        pop one smallest pack back to remainder
+        :param pack_dict: dict of pack size and pack amount
+        :param remainder: remainder
+        :return: pack_dict, remainder
+        """
+        pack_size = list(pack_dict.keys())
+        pack_size.sort()
+
+        for size in pack_size:
+            if size in pack_dict and pack_dict[size] > 0:
+                if pack_dict[size] == 1:
+                    pack_dict.pop(size)
+                else:
+                    pack_dict[size] -= 1
+                remainder += size
+                return pack_dict, remainder
+        return pack_dict, remainder
