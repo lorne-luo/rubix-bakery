@@ -6,65 +6,6 @@ from config import PRICE_DECIMAL_UNIT
 logger = logging.getLogger(__name__)
 
 
-class Bakery:
-    _products = {}
-
-    def __init__(self, products):
-        """
-        :param products: list of product object
-        """
-        for product in products:
-            # skip if type not match
-            if isinstance(product, Product):
-                self._products[product.code] = product
-
-    # expose as property to make sure immutable from outside
-    @property
-    def products(self):
-        return self._products
-
-    def process_order(self, order_dict):
-        """
-        :param order_dict: dict of product code and amount
-        :return: pack result of entire order
-        """
-        raise NotImplementedError
-
-    def get_product(self, code):
-        """
-        get product by code
-        """
-        if code not in self._products:
-            raise KeyError(f'{code} is not a code of products')
-        return self._products[code]
-
-
-class Order:
-    _products = {}
-    total_price = None
-
-    def __init__(self, order_dict):
-        """
-        :param order_dict: dict of product code and quantity
-        """
-        for code, quantity in order_dict.items():
-            self._products[code] = {
-                'quantity': quantity,
-                'packs': {},
-                'total_price': None
-            }
-
-    # expose as property to make sure immutable from outside
-    @property
-    def products(self):
-        return self._products
-
-    def get_product(self, code):
-        if code not in self._products:
-            raise KeyError(f'{code} is not in this order.')
-        return self._products[code]
-
-
 class Product:
     _packs = {}
 

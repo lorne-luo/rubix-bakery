@@ -1,11 +1,14 @@
 import os
 import unittest
+from decimal import Decimal
 
-from bakery import *
+from models.order import Order
+from models.product import Product
+from models.bakery import Bakery
 from config import PRICE_DECIMAL_PLACES, env_bool, env_int
 
 
-class MyTestCase(unittest.TestCase):
+class BakeryTestCase(unittest.TestCase):
     def test_config(self):
         # test env_bool
         self.assertRaises(Exception, env_bool, 'NOT_EXIST')
