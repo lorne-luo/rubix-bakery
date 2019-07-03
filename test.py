@@ -42,6 +42,8 @@ class BakeryTestCase(unittest.TestCase):
         self.assertTrue('packs' in product_info)
         self.assertTrue('total_price' in product_info)
 
+        self.assertRaises(KeyError, order.get_product, 'not_exist_code')
+
     def test_product(self):
         product = Product('Blueberry Muffin',
                           'MB11',
@@ -58,6 +60,7 @@ class BakeryTestCase(unittest.TestCase):
         self.assertEqual(product.get_pack_price(5), Decimal('16.95'))
         self.assertEqual(product.get_pack_price(2), Decimal('9.95'))
         self.assertEqual(product.get_pack_price(8), Decimal('24.95'))
+        self.assertRaises(KeyError, product.get_pack_price, 100)
         self.assertEqual(abs(product.get_pack_price(2).as_tuple().exponent), PRICE_DECIMAL_PLACES)
 
         # calculate order price
@@ -66,22 +69,30 @@ class BakeryTestCase(unittest.TestCase):
         self.assertEqual(product.get_total_price({5: 1, 2: 1, 8: 1}),
                          Decimal('16.95') + Decimal('9.95') + Decimal('24.95'))
 
+        # ignore invalid pack size
+        self.assertEqual(product.get_total_price({5: 1, 2: 1, 100: 1}),
+                         Decimal('16.95') + Decimal('9.95'))
+
         # test order process
-        packs, rest = product.pack_order(14)
+        packs, rest, total_price = product.pack_order(14)
         self.assertEqual(rest, 0)
         self.assertEqual(packs, {8: 1, 2: 3})
+        self.assertEqual(total_price, Decimal('24.95') * 1 + Decimal('9.95') * 3)
 
-        packs, rest = product.pack_order(15)
+        packs, rest, total_price = product.pack_order(15)
         self.assertEqual(rest, 0)
-        self.assertEqual(packs, {8: 1, 2: 3, 5: 1})
+        self.assertEqual(packs, {8: 1, 2: 1, 5: 1})
+        self.assertEqual(total_price, Decimal('24.95') * 1 + Decimal('9.95') * 1 + Decimal('16.95') * 1)
 
-        packs, rest = product.pack_order(1)
+        packs, rest, total_price = product.pack_order(1)
         self.assertEqual(rest, 1)
         self.assertEqual(packs, {})
+        self.assertEqual(total_price, 0)
 
-        packs, rest = product.pack_order(3)
+        packs, rest, total_price = product.pack_order(3)
         self.assertEqual(rest, 1)
         self.assertEqual(packs, {2: 1})
+        self.assertEqual(total_price, Decimal('9.95') * 1)
 
     def test_bakery(self):
         vs = Product('Vegemite Scroll', 'VS5', {3: 6.99,
@@ -97,6 +108,7 @@ class BakeryTestCase(unittest.TestCase):
         # test get product by code
         test_code = 'VS5'
         self.assertEqual(bakery.get_product('VS5').code, test_code)
+        self.assertRaises(KeyError, bakery.get_product, 'not_exist_code')
 
         # input format test
         order_packs = bakery.process_order({'VS5': '10',

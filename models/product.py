@@ -61,13 +61,19 @@ class Product:
         :param order_dict: pack size and amount
         :return: total price
         """
-        raise NotImplementedError
+        total_price = 0
+        for pack_size, pack_amount in order_dict.items():
+            # invalid pack size, skip
+            if pack_size in self._packs:
+                total_price += self.get_pack_price(pack_size) * pack_amount
+
+        return total_price
 
     def _quick_pack(self, quantity):
         """
         most greedy way to match the order, so if perfect match exist it will get quick response
         :param quantity:
-        :return: dict of pack size and amount
+        :return: dict of pack size, pack amount and total price
         """
         result = {}
         rest = quantity
@@ -88,7 +94,9 @@ class Product:
         pack_set = {}
 
         # self.pack_sizes is in descending sort, so prior to put large size pack in
-        return self._fill(pack_set, quantity, self.pack_sizes)
+        pack_dict, remainder = self._fill(pack_set, quantity, self.pack_sizes)
+
+        return pack_dict, remainder, self.get_total_price(pack_dict)
 
     def _fill(self, pack_dict, remainder_quantity, pack_sizes):
         """
