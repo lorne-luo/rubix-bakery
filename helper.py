@@ -66,10 +66,10 @@ def rank_breakdown(rest_quantity, pack_sizes):
     possible_pack_amount = int(
         rest_quantity / current_pack_size) + 1  # make sure the this solution not over rest_quantity quantity
     for j in reversed(range(possible_pack_amount)):
-        # print('####################', rest_quantity, current_pack_size, possible_pack_amount)
+        logger.debug(f'{rest_quantity}, {current_pack_size}, {possible_pack_amount}')
 
         for k in rank_breakdown(rest_quantity - j * current_pack_size, pack_sizes[1:]):
-            # print('     ####################', (j,), k, '=', (j,) + k)
+            logger.debug(f' {(j,)}, {k}, =, {(j,) + k}')
             result.append((j,) + k)
 
     return result
