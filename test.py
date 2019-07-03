@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
         # test member format
         self.assertTrue(isinstance(product.name, str))
         self.assertTrue(isinstance(product.code, str))
-        self.assertTrue(all([isinstance(quantity, int) for quantity in product.pack_quantity]))
+        self.assertTrue(all([isinstance(quantity, int) for quantity in product.pack_sizes]))
         self.assertTrue(all([isinstance(price, Decimal) for price in product._packs.values()]))
 
         # test price getter and decimal places

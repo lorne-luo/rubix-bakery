@@ -103,7 +103,7 @@ class Product:
         return self._code
 
     @property
-    def pack_quantity(self):
+    def pack_sizes(self):
         """quantity list of available packs with descending sort"""
         quantity_options = list(self._packs.keys())
         quantity_options.sort(reverse=True)
@@ -133,7 +133,7 @@ class Product:
         """
         result = {}
         rest = quantity
-        for i in self.pack_quantity:
+        for i in self.pack_sizes:
             pack_amount, rest = int(rest / i), rest % i
             result[i] = pack_amount
             if rest == 0:
@@ -149,8 +149,8 @@ class Product:
 
         pack_set = {}
 
-        # self.pack_quantity is in descending sort, so prior to put large size pack in
-        return self._fill(pack_set, quantity, self.pack_quantity)
+        # self.pack_sizes is in descending sort, so prior to put large size pack in
+        return self._fill(pack_set, quantity, self.pack_sizes)
 
     def _fill(self, pack_dict, remainder_quantity, pack_sizes):
         """
@@ -163,13 +163,13 @@ class Product:
         logger.debug('Call _fill()', pack_dict, remainder_quantity, pack_sizes)
 
         for i in range(len(pack_sizes)):
-            pack_quantity = pack_sizes[i]
+            pack_size = pack_sizes[i]
             pack_amount, remainder_quantity = int(
-                remainder_quantity / pack_quantity), remainder_quantity % pack_quantity
+                remainder_quantity / pack_size), remainder_quantity % pack_size
 
             if pack_amount > 0:
                 # some pack could be added into the pack set
-                pack_dict[pack_quantity] = pack_amount
+                pack_dict[pack_size] = pack_amount
 
             if remainder_quantity == 0 or not pack_sizes[i + 1:]:
                 # return directly if remainder is 0 or no smaller pack size available
