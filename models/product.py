@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 class Product:
-    _packs = {}
 
     def __init__(self, name, code, pack_price_dict):
         """
@@ -17,6 +16,7 @@ class Product:
         """
         self._name = str(name)
         self._code = str(code)
+        self._packs = {}
 
         # init pack quantity and price
         for quantity, price in pack_price_dict.items():

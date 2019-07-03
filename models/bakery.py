@@ -6,12 +6,13 @@ logger = logging.getLogger(__name__)
 
 
 class Bakery:
-    _products = {}
 
     def __init__(self, products):
         """
         :param products: list of product object
         """
+        self._products = {}
+
         for product in products:
             # skip if type not match
             if isinstance(product, Product):

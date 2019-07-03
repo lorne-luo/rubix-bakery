@@ -3,15 +3,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-
 class Order:
-    _products = {}
-    total_price = None
 
     def __init__(self, order_dict):
         """
         :param order_dict: dict of product code and quantity
         """
+        self._products = {}
+        self.total_price = None
+
         for code, quantity in order_dict.items():
             self._products[code] = {
                 'quantity': quantity,
