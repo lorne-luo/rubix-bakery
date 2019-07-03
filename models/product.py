@@ -117,17 +117,17 @@ class Product:
                 # some pack could be added into the pack set
                 pack_dict[pack_size] = pack_amount
 
-            if remainder_quantity == 0 or not pack_sizes[i + 1:]:
+            if remainder_quantity == 0 or not pack_sizes[1:]:
                 # return directly if remainder is 0 or no smaller pack size available
                 logger.debug('_fill() return', pack_dict, remainder_quantity)
                 return pack_dict, remainder_quantity
 
             for j in range(pack_amount):
-                pack_dict, remainder_quantity = self._fill(pack_dict, remainder_quantity, pack_sizes[i + 1:])
+                pack_dict, remainder_quantity = self._fill(pack_dict, remainder_quantity, pack_sizes[1:])
                 if remainder_quantity > 0:
                     pack_dict, remainder_quantity = self._pop_smallest_pack(pack_dict, remainder_quantity)
 
-                if remainder_quantity == 0 or not pack_sizes[i + 1:]:
+                if remainder_quantity == 0 or not pack_sizes[1:]:
                     # return directly if remainder is 0 or no smaller pack size available
                     logger.debug('_fill() return', pack_dict, remainder_quantity)
                     return pack_dict, remainder_quantity
