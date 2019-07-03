@@ -2,10 +2,10 @@ import os
 import unittest
 from decimal import Decimal
 
+from config import PRICE_DECIMAL_PLACES, env_bool, env_int
+from models.bakery import Bakery
 from models.order import Order
 from models.product import Product
-from models.bakery import Bakery
-from config import PRICE_DECIMAL_PLACES, env_bool, env_int
 
 
 class BakeryTestCase(unittest.TestCase):
@@ -74,6 +74,8 @@ class BakeryTestCase(unittest.TestCase):
                          Decimal('16.95') + Decimal('9.95'))
 
         # test order process
+        self.assertRaises(Exception, product.pack_order, 'INVALID_INPUT')  # test invalid input
+
         packs, rest, total_price = product.pack_order(14)
         self.assertEqual(rest, 0)
         self.assertEqual(packs, {8: 1, 2: 3})
@@ -90,8 +92,8 @@ class BakeryTestCase(unittest.TestCase):
         self.assertEqual(total_price, 0)
 
         packs, rest, total_price = product.pack_order(3)
-        self.assertEqual(rest, 1)
         self.assertEqual(packs, {2: 1})
+        self.assertEqual(rest, 1)
         self.assertEqual(total_price, Decimal('9.95') * 1)
 
     def test_bakery(self):
@@ -110,25 +112,27 @@ class BakeryTestCase(unittest.TestCase):
         self.assertEqual(bakery.get_product('VS5').code, test_code)
         self.assertRaises(KeyError, bakery.get_product, 'not_exist_code')
 
+        # init order for test
+        order = Order({'VS5': '10',
+                       'WRONG_CODE': 14,
+                       'CF': 13})
         # input format test
-        order_packs = bakery.process_order({'VS5': '10',
-                                            'WRONG_CODE': 14,
-                                            'CF': 13})
-        self.assertTrue('WRONG_CODE' not in order_packs)
-        self.assertTrue('VS5' in order_packs)
-        self.assertTrue('CF' in order_packs)
-        self.assertTrue('CF' in order_packs)
+        bakery.process_order(order)
+        self.assertTrue(order.get_product('WRONG_CODE')['total_price'] is None)
 
         # test single product order
         order = Order({'VS5': 10})
         bakery.process_order(order)
-        self.assertEqual(order.get_product('VS5')['packs'], {'VS5': {5: 2}})
+        self.assertEqual(order.get_product('VS5')['packs'], {5: 2})
 
         # test combined products order
         order = Order({'VS5': 10,
                        'MB11': 14,
                        'CF': 13})
         bakery.process_order(order)
-        self.assertEqual(order.get_product('VS5')['packs'], {'VS5': {5: 2}})
-        self.assertEqual(order.get_product('MB11')['packs'], {'MB11': {8: 1, 2: 3}})
-        self.assertEqual(order.get_product('CF')['packs'], {'CF': {5: 2, 3: 1}})
+        self.assertEqual(order.get_product('VS5')['packs'], {5: 2})
+        self.assertEqual(order.get_product('VS5')['remainder'], 0)
+        self.assertEqual(order.get_product('MB11')['packs'], {8: 1, 2: 3})
+        self.assertEqual(order.get_product('MB11')['remainder'], 0)
+        self.assertEqual(order.get_product('CF')['remainder'], 0)
+        self.assertEqual(order.get_product('CF')['packs'], {5: 2, 3: 1})
