@@ -1,10 +1,7 @@
 import logging
-import sys
 from decimal import Decimal, ROUND_DOWN
 
-# decimal is better type than float for currency due to fixed point
-DECIMAL_PLACES = 2  # 10 ** -2 = 0.01
-DECIMAL_UNIT = Decimal(str(10 ** (-1 * DECIMAL_PLACES)))
+from config import PRICE_DECIMAL_UNIT
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +81,7 @@ class Product:
         for quantity, price in pack_price_dict.items():
             try:
                 # simply ignore more digits, 1.999 -> 1.99
-                self._packs[int(quantity)] = Decimal(str(price)).quantize(DECIMAL_UNIT, rounding=ROUND_DOWN)
+                self._packs[int(quantity)] = Decimal(str(price)).quantize(PRICE_DECIMAL_UNIT, rounding=ROUND_DOWN)
             except:
                 # skip invalid input, quantity must be int, price must be decimal
                 pass

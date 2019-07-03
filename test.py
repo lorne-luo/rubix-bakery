@@ -1,9 +1,30 @@
+import os
 import unittest
 
 from bakery import *
+from config import PRICE_DECIMAL_PLACES, env_bool, env_int
 
 
 class MyTestCase(unittest.TestCase):
+    def test_config(self):
+        # test env_bool
+        self.assertRaises(Exception, env_bool, 'NOT_EXIST')
+        self.assertEqual(env_bool('NOT_EXIST', 2), True)
+        self.assertEqual(env_bool('NOT_EXIST', 0), False)
+        self.assertEqual(env_bool('NOT_EXIST', '3'), True)
+        self.assertEqual(env_bool('NOT_EXIST', 'false'), False)
+        os.environ["DEBUG"] = "1"
+        self.assertEqual(env_bool('DEBUG'), True)
+
+        # test env_int
+        self.assertRaises(Exception, env_int, 'NOT_EXIST')
+        self.assertRaises(Exception, env_int, 'NOT_EXIST', 'NOT_NUMBER')
+        self.assertEqual(env_int('NOT_EXIST', 2), 2)
+        self.assertEqual(env_int('NOT_EXIST', '3'), 3)
+        os.environ["PRICE_DECIMAL_PLACES"] = "1"
+        self.assertEqual(env_int('PRICE_DECIMAL_PLACES'), 1)
+        self.assertEqual(env_int('PRICE_DECIMAL_PLACES', 2), 1)
+
     def test_order(self):
         order = Order({'VS5': 10,
                        'MB11': 14,
@@ -34,7 +55,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(product.get_pack_price(5), Decimal('16.95'))
         self.assertEqual(product.get_pack_price(2), Decimal('9.95'))
         self.assertEqual(product.get_pack_price(8), Decimal('24.95'))
-        self.assertEqual(abs(product.get_pack_price(2).as_tuple().exponent), DECIMAL_PLACES)
+        self.assertEqual(abs(product.get_pack_price(2).as_tuple().exponent), PRICE_DECIMAL_PLACES)
 
         # calculate order price
         self.assertEqual(product.get_total_price({5: 2}),
