@@ -32,7 +32,7 @@ Clone this repo using git then run `main.py`.
  
  ![](screenshot.png)
  
-# How to test
+## How to test
 Simply run `test.py`
 ```
  cd rubix-bakery
@@ -42,8 +42,8 @@ In this part, I did **super strong random testing** to cover the kernal algorith
 
 see [test.py](b.com/lorne-luo/rubix-bakery/blob/master/test.py)
 
-### Algorithm Explaination
-#### Problem Definition
+## Algorithm Explaination
+### Problem Definition
 
 Problem input: `TOTAL_QUANTITY` (int) and `PACK_SIZES` (int list)
 
@@ -53,7 +53,7 @@ Problem output:
 
 2. If perfect match no exist, find a `PACK_AMOUNTS` meet `MINIMISE(TOTAL_QUANTITY - PACK_AMOUNTS * PACK_SIZES)` first, then `MINIMISE(SUM(PACK_AMOUNTS))`.
 
-#### Problem Analysis
+### Problem Analysis
 
 Follow the considerations below, we can always find a global best solution for this problem:
 
@@ -85,7 +85,7 @@ For meet this problem's requirement, I have below thought:
 2. To make sure priorly return the perfect matched solution, just need check remainder in each loop, **if remainder == 0 return current solution immediately**.
 3. For the case of a perfect match not exist, a global variable defined out of the loop is needed to **keep the first occurred solution with the lowest remainder**. If loop ended still can't find a perfect match solution, then give this global variable as the return.
 
-#### Algorithm Implementation
+### Algorithm Implementation
 My implementation is a typical dynamic programming algorithm using recursion. The core functions is in [helper.py](https://github.com/lorne-luo/rubix-bakery/blob/master/helper.py).
 
 This implementation is not the performance best one. 
@@ -106,7 +106,7 @@ If performance has bottleneck, we can still break the recursion into For loop an
  
 If in a performance concerned scenario, we can still break the recursion into For loop and bring the quantity-checking inside.
 
-# Development & Tools
+## Development & Tools
 
 1. This project followed TDD development process, test case had been added in the [first commit](https://github.com/lorne-luo/rubix-bakery/commit/63badd3b8767b34ee9204c31cccb988f09be6feb).
 
