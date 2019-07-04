@@ -1,3 +1,5 @@
+import sys
+
 from models.bakery import Bakery
 from models.order import Order
 from models.product import Product
@@ -71,12 +73,18 @@ if __name__ == "__main__":
     for code, product in bakery.products.items():
         print(f"Please input how many {product.name} you want:")
 
-        while not product_quantity.get(code, "").isdigit():
-            product_quantity[code] = input()
-            if not product_quantity[code].isdigit():
+        while True:
+            temp_input = input()
+            if not temp_input.isdigit():
                 print(
-                    f"`{product_quantity[code]}` is invalid input, please input a number for {product.name}:"
+                    f"`{temp_input}` is invalid input, please input a positive quantity for {product.name}:"
                 )
+                continue
+            if int(temp_input) > sys.maxsize:
+                print(f"Please input a reasonable quantity for {product.name}:")
+                continue
+            product_quantity[code] = int(temp_input)
+            break
 
     order = Order(product_quantity)
 
