@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 class Bakery:
-
     def __init__(self, products):
         """
         :param products: list of product object
@@ -29,13 +28,15 @@ class Bakery:
         :return: order object
         """
         for product_code, order_product in order.products.items():
-            quantity = order_product.get('quantity')
+            quantity = order_product.get("quantity")
             if product_code not in self._products:
                 # skip invalid product code
                 continue
 
             # call product.pack_order to break down quantity
-            packs, remainder, total_price = self.get_product(product_code).pack_order(quantity)
+            packs, remainder, total_price = self.get_product(product_code).pack_order(
+                quantity
+            )
             order.set_product_break_down(product_code, packs, remainder, total_price)
 
     def get_product(self, code):
@@ -43,5 +44,5 @@ class Bakery:
         get product by code
         """
         if code not in self._products:
-            raise KeyError(f'{code} is not a code of products')
+            raise KeyError(f"{code} is not a code of products")
         return self._products[code]

@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 class Product:
-
     def __init__(self, name, code, pack_price_dict):
         """
         :param name: name of product
@@ -23,7 +22,9 @@ class Product:
         for quantity, price in pack_price_dict.items():
             try:
                 # simply ignore more digits, 1.999 -> 1.99
-                self._packs[int(quantity)] = Decimal(str(price)).quantize(PRICE_DECIMAL_UNIT, rounding=ROUND_DOWN)
+                self._packs[int(quantity)] = Decimal(str(price)).quantize(
+                    PRICE_DECIMAL_UNIT, rounding=ROUND_DOWN
+                )
             except:
                 # skip invalid input, quantity must be int, price must be decimal
                 pass
@@ -54,7 +55,7 @@ class Product:
         :return: price for specified quantity pack, raise error if not exist
         """
         if quantity not in self._packs:
-            raise KeyError(f'{quantity} is not in {self.code}\'s pack options')
+            raise KeyError(f"{quantity} is not in {self.code}'s pack options")
         return self._packs[quantity]
 
     def get_total_price(self, order_dict):
@@ -90,7 +91,7 @@ class Product:
         try:
             quantity = int(quantity)
         except:
-            raise Exception('invalid quantity, should be int')
+            raise Exception("invalid quantity, should be int")
 
         # self.pack_sizes is in descending sort, so prior to put large size pack in
         pack_dict, remainder = pack_breakdown(quantity, self.pack_sizes)

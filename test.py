@@ -40,7 +40,6 @@ def generate_random_list(dimension=None, value_upper_bound=20):
 
 
 class BakeryTestCase(unittest.TestCase):
-
     def test_rank_breakdown(self):
         # brutal random test
         for quantity in range(200):

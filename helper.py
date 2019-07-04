@@ -8,24 +8,37 @@ def pack_breakdown(total_quantity, pack_sizes):
     best_remainder = total_quantity
     best_remainder_packs = {}
 
-    solution_space = rank_breakdown(total_quantity, pack_sizes)  # whole possible solution space
+    solution_space = rank_breakdown(
+        total_quantity, pack_sizes
+    )  # whole possible solution space
+
     for solution in solution_space:
-        quantity_per_product = [pack_sizes[i] * solution[i] for i in range(len(solution))]
+        quantity_per_product = [
+            pack_sizes[i] * solution[i] for i in range(len(solution))
+        ]
+
         total = sum(quantity_per_product)
         remainder = total_quantity - total
 
         if remainder == 0:
             # perfect breakdown, return directly
-            logger.debug(f'{solution}, {remainder}')
-            pack_amount_tuple = [(pack_sizes[i], solution[i]) for i in range(len(solution))]
-            pack_dict = dict(pack_amount_tuple)  # convert to dict, pack size is key ,pack amount is value
+            logger.debug(f"{solution}, {remainder}")
+            pack_amount_tuple = [
+                (pack_sizes[i], solution[i]) for i in range(len(solution))
+            ]
+            pack_dict = dict(
+                pack_amount_tuple
+            )  # convert to dict, pack size is key ,pack amount is value
             return pack_dict, 0
         else:
-            logger.debug(f'{solution}, {remainder}')
+            logger.debug(f"{solution}, {remainder}")
             if remainder > 0 and remainder < best_remainder:
-                pack_amount_tuple = [(pack_sizes[i], solution[i]) for i in range(len(solution))]
+                pack_amount_tuple = [
+                    (pack_sizes[i], solution[i]) for i in range(len(solution))
+                ]
                 best_remainder_packs = dict(
-                    pack_amount_tuple)  # convert to dict, pack size is key ,pack amount is value
+                    pack_amount_tuple
+                )  # convert to dict, pack size is key ,pack amount is value
                 best_remainder = remainder
 
     # cant find perfect breakdown, return the minimized remainder solution with pack amount minimized
@@ -57,19 +70,22 @@ def rank_breakdown(rest_quantity, pack_sizes):
 
     pack_choice_number = len(pack_sizes)
     current_pack_size = pack_sizes[0]
+
     if pack_choice_number == 1:
         # end of recursion
         pack_amount = int(rest_quantity / current_pack_size)
         return [(pack_amount,)]  # dont forget comma to let it as a tuple
 
     result = []
-    possible_pack_amount = int(
-        rest_quantity / current_pack_size) + 1  # make sure the this solution not over rest_quantity quantity
+    possible_pack_amount = (
+        int(rest_quantity / current_pack_size) + 1
+    )  # make sure the this solution not over rest_quantity quantity
+
     for j in reversed(range(possible_pack_amount)):
-        logger.debug(f'{rest_quantity}, {current_pack_size}, {possible_pack_amount}')
+        logger.debug(f"{rest_quantity}, {current_pack_size}, {possible_pack_amount}")
 
         for k in rank_breakdown(rest_quantity - j * current_pack_size, pack_sizes[1:]):
-            logger.debug(f' {(j,)}, {k}, =, {(j,) + k}')
+            logger.debug(f" {(j,)}, {k}, =, {(j,) + k}")
             result.append((j,) + k)
 
     return result

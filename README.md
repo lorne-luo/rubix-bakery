@@ -35,6 +35,9 @@ Simply run `test.py`
  cd rubix-bakery
  python test.py
  ```
+In this part, I did **super strong random testing** to cover the kernal algorithm function `rank_breakdown` and `pack_breakdown`. 
+
+see [test.py](b.com/lorne-luo/rubix-bakery/blob/master/test.py)
 
 ### Algorithm Explaination
 #### Problem Definition
