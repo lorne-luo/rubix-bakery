@@ -28,6 +28,9 @@ Clone this repo using git then run `main.py`.
  cd rubix-bakery
  python main.py
  ```
+ **Screenshot:**
+ 
+ ![](screenshot.png)
  
 # How to test
 Simply run `test.py`
