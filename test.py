@@ -147,8 +147,11 @@ class BakeryTestCase(unittest.TestCase):
 
         packs, rest, total_price = product.pack_order(15)
         self.assertEqual(rest, 0)
-        self.assertEqual(packs, {5: 3})
-        self.assertEqual(total_price, Decimal("16.95") * 3)
+        self.assertEqual(packs, {8: 1, 2: 1, 5: 1})
+        self.assertEqual(
+            total_price,
+            Decimal("24.95") * 1 + Decimal("9.95") * 1 + Decimal("16.95") * 1,
+        )
 
         packs, rest, total_price = product.pack_order(1)
         self.assertEqual(rest, 1)

@@ -4,9 +4,14 @@
 This system will breakdown the packs of client's order by following rules:
 
 1. If perfect breakdown exists, always return the perfect breakdown with minimum packs amount. Perfect breakdown means match the client's quantity with no remainder.
+
 2. If perfect breakdown not exists, consider to minimize the remainder first, then minimum packs amount.
     
     Example: Having pack size 5 and 8, for quantity 11 the expected answer should be 2 packs of 5 instead of 1 pack of 8 due to previous one have the lower remainder.
+    
+3. In special case, it may have multiple solutions with same minimum pack amount. We consider they are both best solutions and not compare the price anymore.
+    
+    For example use `[8,5,2]` to break down 15, both `8x1 + 5x1 + 2x1` and `5x3` can match. 
      
 ## Install Environment
 To make it convenient to run and test, this works is finished within all Python built-in packages, so none extra packages need to be installed. The Python version should be 3.6 or above due to used [f-string formatting](https://docs.python.org/3/reference/lexical_analysis.html#f-strings) which is a new in Python 3.6.
@@ -38,9 +43,9 @@ Simply run `test.py`
  cd rubix-bakery
  python test.py
  ```
-In this part, I did **super strong random testing** to cover the kernal algorithm function `rank_breakdown` and `pack_breakdown`. 
+In this part, I did **super strong random testing** to cover the kernal algorithm function `PackBreaker.pack_breakdown()`. 
 
-see [test.py](b.com/lorne-luo/rubix-bakery/blob/master/test.py)
+see [test.py](https://github.com/lorne-luo/rubix-bakery/blob/master/test.py#L42)
 
 ## Algorithm Explaination
 ### Problem Definition
@@ -88,7 +93,7 @@ For meet this problem's requirement, I have below thought:
 ### Algorithm Implementation
 My implementation is a typical dynamic programming algorithm using recursion. The core functions is in [helper.py](https://github.com/lorne-luo/rubix-bakery/blob/master/helper.py).
 
-1. In `PackBreaker.pack_breakdown()`, it will **loop all possible solution by the order of total pack amount ascending**. 
+1. In [PackBreaker.pack_breakdown()](https://github.com/lorne-luo/rubix-bakery/blob/master/helper.py#L30), it will **loop all possible solution by the order of total pack amount ascending**. 
 This will make sure it can minimise the total packs amount.
 
 2. During the recursion two global variables `PackBreaker.best_remainder` and `PackBreaker.best_remainder_packs` will always keep dated best solution.

@@ -62,11 +62,11 @@ class PackBreaker:
             logger.debug(
                 f"{rest_quantity}, {current_pack_size}, {possible_pack_amount}"
             )
-
+            next_pack_amount = filled_pack_amount + (j,)
             for k in self.pack_breakdown(
                     rest_quantity - j * current_pack_size,
                     pack_sizes[1:],
-                    filled_pack_amount,
+                    next_pack_amount,  # add current amount j into filled_pack_amount and send to next recursion
             ):
                 packs_amount = (j,) + k
                 remainder = self.get_remainder(packs_amount)
