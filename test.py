@@ -4,7 +4,7 @@ import unittest
 from decimal import Decimal
 
 from config import PRICE_DECIMAL_PLACES, env_bool, env_int
-from helper import rank_breakdown, pack_breakdown
+from helper import PackBreaker
 from models.bakery import Bakery
 from models.order import Order
 from models.product import Product
@@ -40,34 +40,7 @@ def generate_random_list(dimension=None, value_upper_bound=20):
 
 
 class BakeryTestCase(unittest.TestCase):
-    def test_rank_breakdown(self):
-        # brutal random test
-        for quantity in range(200):
-            # random generate pack size with random dimension
-            random_pack_sizes = generate_random_list()
-            random_pack_sizes.sort(reverse=True)  # pack sizes should be descending
-
-            # run rank_breakdown with all random input
-            breakdown_candidates = rank_breakdown(quantity, random_pack_sizes)
-
-            # loop all solution candidates
-            for breakdown in breakdown_candidates:
-                total = sum(
-                    [
-                        random_pack_sizes[i] * breakdown[i]
-                        for i in range(len(random_pack_sizes))
-                    ]
-                )
-
-                # criteria 1: total quantity should not excess quantity (all too-much solution excluded)
-                self.assertTrue(total <= quantity)
-
-                # criteria 2: quantity - total < max(random_pack_sizes) (all too-less solution excluded)
-                self.assertTrue(quantity - total < max(random_pack_sizes))
-
-    def test_pack_breakdown(self):
-        # reverse random test
-        # give any quantity which known have prefect match, the remainder should always 0
+    def test_pack_breaker(self):
         for i in range(100):  # random test 100 times
             random_pack_sizes = generate_random_list()
             random_pack_sizes.sort(reverse=True)  # pack sizes should be descending
@@ -82,11 +55,15 @@ class BakeryTestCase(unittest.TestCase):
                 ]
             )
 
-            packs_amount, remainder = pack_breakdown(
-                perfect_quantity, random_pack_sizes
-            )
-            # print(i, random_pack_sizes, random_packs_amount, perfect_quantity)
+            # invoke PackBreaker
+            breaker = PackBreaker(perfect_quantity, random_pack_sizes)
+
+            pack_amounts, remainder = breaker.solve()
+
             # accept criteria, remainder should always 0
+            if remainder > 0:
+                print(random_packs_amount)
+                print(perfect_quantity, random_pack_sizes)
             self.assertEqual(remainder, 0)
 
     def test_config(self):
@@ -170,11 +147,8 @@ class BakeryTestCase(unittest.TestCase):
 
         packs, rest, total_price = product.pack_order(15)
         self.assertEqual(rest, 0)
-        self.assertEqual(packs, {8: 1, 2: 1, 5: 1})
-        self.assertEqual(
-            total_price,
-            Decimal("24.95") * 1 + Decimal("9.95") * 1 + Decimal("16.95") * 1,
-        )
+        self.assertEqual(packs, {5: 3})
+        self.assertEqual(total_price, Decimal("16.95") * 3)
 
         packs, rest, total_price = product.pack_order(1)
         self.assertEqual(rest, 1)

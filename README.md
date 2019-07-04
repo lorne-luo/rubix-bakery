@@ -88,23 +88,15 @@ For meet this problem's requirement, I have below thought:
 ### Algorithm Implementation
 My implementation is a typical dynamic programming algorithm using recursion. The core functions is in [helper.py](https://github.com/lorne-luo/rubix-bakery/blob/master/helper.py).
 
-This implementation is not the performance best one. 
+1. In `PackBreaker.pack_breakdown()`, it will **loop all possible solution by the order of total pack amount ascending**. 
+This will make sure it can minimise the total packs amount.
 
-1. In `rank_breakdown` function I calculated all edged solutions with packs amount descending(just edged possible solutions, all too much or too less solutions are excluded from the loop) while in total quantity checking step (funcion `pack_breakdown`) not all solutions will be looped.
+2. During the recursion two global variables `PackBreaker.best_remainder` and `PackBreaker.best_remainder_packs` will always keep dated best solution.
 
-2. Function `rank_breakdown` is finished by recursion. Recursion can significantly save codes but need extra memory for stack push/pop, and **as input value increasing this cost may explode**.
+3. Once `PackBreaker.best_remainder == 0` means a perfect match solution found, then will **return empty array to pop out the calling stack ASAP**. 
+This will keep it will always have best performance.
 
-But my implementation also has significant advantages.
-
-1. Expose all edged possible solutions at once could make implementation **much easier to understand**, and also have **better modularization**.
-
-2. Recursion cloud **avoids too deep nested For loop**, **save lots of codes** and **be easy for understanding**. 
-
-So if not in a performance concerned scenario I'd like to take this implementation due to easier to maintain.
- 
-If performance has bottleneck, we can still break the recursion into For loop and put the quantity-checking inside to optimize the calculation and memory usage.
- 
-If in a performance concerned scenario, we can still break the recursion into For loop and bring the quantity-checking inside.
+4. If perfect matched solution not exist, these global variables will still keep the dated best solution, so after whole solution space searched, it **still can return the best solution with remainder**.
 
 ## Development & Tools
 

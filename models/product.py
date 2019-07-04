@@ -2,7 +2,7 @@ import logging
 from decimal import Decimal, ROUND_DOWN
 
 from config import PRICE_DECIMAL_UNIT
-from helper import pack_breakdown
+from helper import PackBreaker
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +94,8 @@ class Product:
             raise Exception("invalid quantity, should be int")
 
         # self.pack_sizes is in descending sort, so prior to put large size pack in
-        pack_dict, remainder = pack_breakdown(quantity, self.pack_sizes)
+        breaker = PackBreaker(quantity, self.pack_sizes)
+        pack_dict, remainder=breaker.solve()
 
         # remove pack size if amount == 0, pack_dict can be empty dict
         if pack_dict:
