@@ -3,24 +3,26 @@
 ## Requirement Specification
 This system will breakdown the packs of client's order by following rules:
 
-1. If perfect breakdown exists, always return the perfect breakdown with minimum packs amount. Perfect breakdown means match the client's quantity with no remainder.
+1. If perfect breakdown exists, always return the perfect breakdown with minimum packs amount. Perfect breakdown means match the client's quantity demand with no remainder.
 
-2. If perfect breakdown not exists, consider to minimize the remainder first, then minimum packs amount.
+2. If perfect breakdown not exists, consider to minimise the remainder first, then the packs amount.
     
     Example: Having pack size 5 and 8, for quantity 11 the expected answer should be 2 packs of 5 instead of 1 pack of 8 due to previous one have the lower remainder.
     
-3. In special case, it may have multiple solutions with same minimum pack amount. We consider they are both best solutions and not compare the price anymore.
+3. In special case, it may have multiple solutions with same minimum pack amount. We consider they are both best solutions and not compare other factors anymore (price etc.)
     
     For example use `[8,5,2]` to break down 15, both `8x1 + 5x1 + 2x1` and `5x3` can match. 
      
 ## Install Environment
-To make it convenient to run and test, this works is finished within all Python built-in packages, so none extra packages need to be installed. The Python version should be 3.6 or above due to used [f-string formatting](https://docs.python.org/3/reference/lexical_analysis.html#f-strings) which is a new in Python 3.6.
+To make it convenient to run and test, this works is finished within Python built-in library, no extra packages needed.
+
+The Python version should be 3.6 or above due to used [f-string formatting](https://docs.python.org/3/reference/lexical_analysis.html#f-strings) which is new in Python 3.6.
 - Python 3.6 or above
 - Git
 
-## How to config
+## How to configure (optional)
 
-Two settings provided, set env vars to make configure:
+Two settings provided, set environment variable to change default setting:
 
 1. **DEBUG**: for enabling debug log, accept `true`, `false`, `1` and `0`, default is False
 2. **PRICE_DECIMAL_PLACES**: to specify price decimal places, accept integer number, default is `2`
@@ -43,9 +45,9 @@ Simply run `test.py`
  cd rubix-bakery
  python test.py
  ```
-In this part, I did **super strong random testing** to cover the kernal algorithm function `PackBreaker.pack_breakdown()`. 
+In this part, I did [**super strong random testing**](https://github.com/lorne-luo/rubix-bakery/blob/master/test.py#L42) to cover the kernal algorithm function [`PackBreaker.pack_breakdown()`](https://github.com/lorne-luo/rubix-bakery/blob/master/helper.py#L31). 
 
-see [test.py](https://github.com/lorne-luo/rubix-bakery/blob/master/test.py#L42)
+See [test.py](https://github.com/lorne-luo/rubix-bakery/blob/master/test.py#L42)
 
 ## Algorithm Explaination
 ### Problem Definition
