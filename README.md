@@ -93,7 +93,11 @@ For meet this problem's requirement, I have below thought:
 3. For the case of a perfect match not exist, a global variable defined out of the loop is needed to **keep the first occurred solution with the lowest remainder**. If loop ended still can't find a perfect match solution, then give this global variable as the return.
 
 ### Algorithm Implementation
-My implementation is a typical dynamic programming algorithm using recursion. The core functions is in [helper.py](https://github.com/lorne-luo/rubix-bakery/blob/master/helper.py).
+As this problem have :
+1. Entire problem can split into overlapping sub-problems (recursive calling of function `BEST_BREAKDOWN`)
+2. Sub-problem's result maybe part of of final solution, so it should be memorized and reused in other recursion (see `filled_pack_amount` parameter in [PackBreaker.pack_breakdown()](https://github.com/lorne-luo/rubix-bakery/blob/master/helper.py#L30))
+
+So this is a typical dynamic programming problem. The implementation of core functions is in [helper.py](https://github.com/lorne-luo/rubix-bakery/blob/master/helper.py).
 
 1. In [PackBreaker.pack_breakdown()](https://github.com/lorne-luo/rubix-bakery/blob/master/helper.py#L30), it will **loop all possible solution by the order of total pack amount ascending**. 
 This will make sure it can minimise the total packs amount.
@@ -109,6 +113,6 @@ This will keep it will always have best performance.
 
 1. This project followed TDD development process, test case had been added in the [first commit](https://github.com/lorne-luo/rubix-bakery/commit/63badd3b8767b34ee9204c31cccb988f09be6feb).
 
-2. Implemented by Mac OS and PyCharm 
+2. Implemented by Mac OS and PyCharm
 
 3. All codes are formatted using [black](https://github.com/python/black) to improve the readability. 

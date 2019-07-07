@@ -43,12 +43,13 @@ class PackBreaker:
         pack_choice_number = len(pack_sizes)
         current_pack_size = pack_sizes[0]
 
-        if pack_choice_number == 1:  # now we are trying min pack size
-            # end of recursion
+        if pack_choice_number == 1:
+            # now we are trying min pack size, end of recursion
             pack_amount = int(rest_quantity / current_pack_size)
             packs_amount = filled_pack_amount + (pack_amount,)
             remainder = self.get_remainder(packs_amount)
             if remainder >= 0 and remainder < self.best_remainder:
+                # got better best_remainder, record it
                 self.best_remainder_packs = self.amount_to_breakdown(packs_amount)
                 self.best_remainder = remainder
             return [(pack_amount,)]  # dont forget comma to let it as a tuple
