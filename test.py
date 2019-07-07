@@ -41,7 +41,7 @@ def generate_random_list(dimension=None, value_upper_bound=20):
 
 class BakeryTestCase(unittest.TestCase):
     def test_pack_breaker(self):
-        for i in range(100):  # random test 100 times
+        for i in range(1000):  # random test 100 times
             random_pack_sizes = generate_random_list()
             random_pack_sizes.sort(reverse=True)  # pack sizes should be descending
             random_packs_amount = generate_random_list(
@@ -55,16 +55,15 @@ class BakeryTestCase(unittest.TestCase):
                 ]
             )
 
-            # invoke PackBreaker
+            # invoke PackBreaker to solve perfect_quantity
             breaker = PackBreaker(perfect_quantity, random_pack_sizes)
-
             pack_amounts, remainder = breaker.solve()
+            self.assertEqual(remainder, 0)  # accept criteria, remainder should always 0
 
-            # accept criteria, remainder should always 0
-            if remainder > 0:
-                print(random_packs_amount)
-                print(perfect_quantity, random_pack_sizes)
-            self.assertEqual(remainder, 0)
+            # add 1 for perfect_quantity, the remainder should be no more than 1
+            breaker = PackBreaker(perfect_quantity + 1, random_pack_sizes)
+            pack_amounts, remainder = breaker.solve()
+            self.assertTrue(remainder <= 1)  # accept criteria, remainder should no more than 1
 
     def test_config(self):
         # test env_bool
