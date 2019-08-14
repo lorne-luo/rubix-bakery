@@ -109,6 +109,18 @@ This will keep it will always have best performance.
 
 4. If perfect matched solution not exist, these global variables will still keep the dated best solution, so after whole solution space searched, it **still can return the best solution with remainder**.
 
+### Potential Problem - Recursion limitation
+This project got a recursion algorithm implementation, while Python do not support recursion really well due to the recursive depth limitation.
+
+You can check your local machine's recursion limit by command below:  
+```
+>> import sys
+>> print(sys.getrecursionlimit())
+>> 3000
+```
+
+So in a production project or if the input space is deep, we need break the recursion with loops.
+
 ## Development & Tools
 
 1. This project followed TDD development process, test case had been added in the [first commit](https://github.com/lorne-luo/rubix-bakery/commit/63badd3b8767b34ee9204c31cccb988f09be6feb).
