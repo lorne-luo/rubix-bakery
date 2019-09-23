@@ -109,7 +109,7 @@ This will keep it will always have best performance.
 
 4. If perfect matched solution not exist, these global variables will still keep the dated best solution, so after whole solution space searched, it **still can return the best solution with remainder**.
 
-### Potential Problem - Recursion limitation
+## Potential Issue - Python Recursion limitation
 This project got a recursion algorithm implementation, while Python do not support recursion really well due to the recursive depth limitation.
 
 You can check your local machine's recursion limit by command below:  
